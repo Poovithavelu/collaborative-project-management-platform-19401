@@ -10,3 +10,6 @@ declare module "@/app/dashboard/projects/[id]/layout";
 declare module "@/app/dashboard/projects/[id]/TaskModal";
 declare module "@/app/dashboard/projects/[id]/tasks/ClientTasksSection";
 declare module "@/app/dashboard/projects/[id]/tasks/ClientTasksSectionServer";
+declare module "@/app/dashboard/projects/[id]/tasks/Comments";
+declare module "@/app/dashboard/projects/[id]/tasks/CommentsServer";
+declare module "@/lib/comments";

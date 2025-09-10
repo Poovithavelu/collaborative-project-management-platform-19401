@@ -5,6 +5,7 @@ import { PrimaryButton } from "@/components/ui";
 import TaskModal from "../TaskModal";
 import type { Task } from "@/lib/tasks";
 import { createTaskAction, updateTaskAction } from "@/lib/tasks";
+import CommentsServer from "./CommentsServer";
 
 export default function ClientTasksSection({
   initialTasks,
@@ -75,6 +76,8 @@ export default function ClientTasksSection({
               {t.assignee_id && (
                 <div className="mt-2 text-xs text-gray-500">Assignee: {t.assignee_id}</div>
               )}
+              {/* Comments section for this task */}
+              <CommentsServer taskId={t.id} projectId={projectId} />
             </li>
           ))}
         </ul>

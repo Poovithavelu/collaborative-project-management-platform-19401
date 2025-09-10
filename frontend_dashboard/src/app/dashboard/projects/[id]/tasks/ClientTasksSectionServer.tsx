@@ -1,16 +1,12 @@
 import React from "react";
-import dynamic from "next/dynamic";
 import type { Task } from "@/lib/tasks";
+import ClientTasksSection from "./ClientTasksSection";
 
 /**
  * PUBLIC_INTERFACE
- * Server component wrapper that dynamically imports the client-only tasks section.
- * This ensures no accidental SSR-only behavior impacts the build and keeps boundaries explicit.
+ * Server component wrapper that imports the client-only tasks section.
+ * The imported component has "use client" at the top, ensuring proper boundary.
  */
-const ClientTasksSection = dynamic(() => import("./ClientTasksSection"), {
-  ssr: false,
-});
-
 export default function ClientTasksSectionServer({
   initialTasks,
   projectId,
