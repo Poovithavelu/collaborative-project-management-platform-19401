@@ -53,7 +53,9 @@ export async function listTasksByProject(projectId: string): Promise<Task[]> {
   const res = await apiRequest<Task[]>(`/tasks?project_id=${encodeURIComponent(projectId)}`, {
     method: "GET",
   });
-  if (!res.ok || !res.data) return [];
+  if (!res.ok || !res.data) {
+    return [];
+  }
   return res.data;
 }
 
@@ -65,6 +67,12 @@ export async function listTasksByProject(projectId: string): Promise<Task[]> {
  */
 export async function createTaskAction(_: unknown, formData: FormData) {
   "use server";
+
+  // Avoid external calls during build
+  if ((process.env.NEXT_PHASE || "").includes("build")) {
+    return { error: "Action disabled during build." };
+  }
+
   const project_id = String(formData.get("project_id") || "").trim();
   const title = String(formData.get("title") || "").trim();
   const descriptionRaw = formData.get("description");
@@ -104,6 +112,12 @@ export async function createTaskAction(_: unknown, formData: FormData) {
  */
 export async function updateTaskAction(_: unknown, formData: FormData) {
   "use server";
+
+  // Avoid external calls during build
+  if ((process.env.NEXT_PHASE || "").includes("build")) {
+    return { error: "Action disabled during build." };
+  }
+
   const task_id = String(formData.get("task_id") || "").trim();
   const project_id = String(formData.get("project_id") || "").trim();
   const titleRaw = formData.get("title");

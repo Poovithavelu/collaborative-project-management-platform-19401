@@ -63,11 +63,11 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
    * Try to fetch /auth/me with cookies included (backend should read HttpOnly cookie).
    * If that fails with 401 in certain dev setups where only a token cookie exists as a non-HttpOnly cookie,
    * send Authorization header using the dev cookie as a fallback.
+   * During build phase, apiRequest returns a skipped-call error; treat as unauthenticated.
    */
   // First try without explicit Authorization.
   const first = await apiRequest<UserProfile>("/auth/me", { method: "GET" });
   if (first.ok && first.data) {
-    // Normalize fields from backend UserProfile to our AuthUser shape.
     const d = first.data;
     return {
       id: d.id ?? "",
@@ -75,6 +75,8 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
       name: (d.full_name ?? undefined) as string | undefined,
       org_id: (d.active_org_id ?? null) as string | null,
     };
+  } else if (first.error === "Skipped external API call during build phase") {
+    return null;
   }
 
   // Fallback: if a non-HttpOnly cookie exists, forward it as Bearer.
@@ -93,6 +95,9 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
         org_id: (d.active_org_id ?? null) as string | null,
       };
     }
+    if (withHeader.error === "Skipped external API call during build phase") {
+      return null;
+    }
   }
 
   return null;
@@ -110,6 +115,12 @@ export async function requireAuth() {
 // PUBLIC_INTERFACE
 export async function loginAction(_: unknown, formData: FormData) {
   "use server";
+
+  // Avoid external calls during build
+  if ((process.env.NEXT_PHASE || "").includes("build")) {
+    return { error: "Login disabled during build." };
+  }
+
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
 
@@ -144,6 +155,12 @@ export async function loginAction(_: unknown, formData: FormData) {
 // PUBLIC_INTERFACE
 export async function registerAction(_: unknown, formData: FormData) {
   "use server";
+
+  // Avoid external calls during build
+  if ((process.env.NEXT_PHASE || "").includes("build")) {
+    return { error: "Registration disabled during build." };
+  }
+
   const name = String(formData.get("name") || "").trim();
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
@@ -187,11 +204,15 @@ export async function registerAction(_: unknown, formData: FormData) {
 // PUBLIC_INTERFACE
 export async function logoutAction() {
   "use server";
+
   // Clear local dev cookie fallback
   cookies().set(COOKIE_NAME, "", { path: "/", maxAge: 0 });
 
-  // Try backend logout if available (ignore errors)
-  await apiRequest<unknown>("/auth/logout", { method: "POST" });
+  // Avoid external calls during build
+  if (!(process.env.NEXT_PHASE || "").includes("build")) {
+    // Try backend logout if available (ignore errors)
+    await apiRequest<unknown>("/auth/logout", { method: "POST" });
+  }
 
   redirect("/login");
 }

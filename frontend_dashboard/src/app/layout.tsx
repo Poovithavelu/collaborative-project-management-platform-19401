@@ -5,8 +5,8 @@ import "./globals.css";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Minimal Next.js App",
-  description: "Ultra-minimal Next.js application",
+  title: "CollabTask",
+  description: "Collaborate on projects and tasks with your team.",
 };
 
 export default function RootLayout({

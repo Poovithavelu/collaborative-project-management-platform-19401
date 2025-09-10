@@ -41,7 +41,9 @@ export async function listCommentsByTask(taskId: string): Promise<Comment[]> {
       method: "GET",
     }
   );
-  if (!res.ok || !res.data) return [];
+  if (!res.ok || !res.data) {
+    return [];
+  }
   return res.data;
 }
 
@@ -53,6 +55,12 @@ export async function listCommentsByTask(taskId: string): Promise<Comment[]> {
  */
 export async function createCommentAction(_: unknown, formData: FormData) {
   "use server";
+
+  // Avoid external calls during build
+  if ((process.env.NEXT_PHASE || "").includes("build")) {
+    return { error: "Action disabled during build." };
+  }
+
   const task_id = String(formData.get("task_id") || "").trim();
   const project_id = String(formData.get("project_id") || "").trim(); // included to know which page to revalidate
   const content = String(formData.get("content") || "").trim();

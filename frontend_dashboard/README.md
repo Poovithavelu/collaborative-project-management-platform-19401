@@ -3,11 +3,19 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Auth-enabled Frontend
 
 This app includes:
-- Login: `/login`
-- Register: `/register`
-- Protected Dashboard: `/dashboard` (server-side redirect to `/login` if unauthenticated)
+- Login: `/login` (calls POST `/auth/login`, stores JWT token in a safe dev cookie if backend doesn't set HttpOnly cookie)
+- Register: `/register` (calls POST `/auth/register`, redirects to `/dashboard` on success)
+- Protected Dashboard: `/dashboard` (server-side route guard redirects to `/login` if no JWT)
+- Dashboard Navbar: shows user info from `/auth/me` and has logout action
 - Server actions for `loginAction`, `registerAction`, `logoutAction`
 - Projects list and creation via `listProjects` and `createProjectAction`
+
+Route Guard:
+- Implemented with `requireAuth()` in server-side layouts/pages under `/dashboard`. If unauthenticated, it performs a server redirect to `/login`.
+
+Token Handling:
+- Preferred: Backend sets HttpOnly cookie. Frontend fetches `/auth/me` with `credentials: "include"`.
+- Dev fallback: If backend returns `{ access_token }` in JSON only, we set a non-HttpOnly cookie named by `AUTH_COOKIE_NAME` to allow Authorization header fallback.
 
 The dashboard layout calls `/auth/me` on the backend to get the current user and org context. The dashboard page lists projects scoped to the user's active organization using:
 - GET `/projects` to fetch all projects in active org
@@ -21,6 +29,9 @@ NEXT_PUBLIC_BACKEND_API_URL=http://localhost:8000
 AUTH_COOKIE_SECURE=false
 AUTH_COOKIE_SAMESITE=lax
 AUTH_COOKIE_NAME=collabtask_session
+
+# CI/build toggle to skip outbound API calls during `next build`
+DISABLE_API_DURING_BUILD=true
 ```
 
 The backend should set an HttpOnly JWT cookie on successful login/registration. For development, if the backend only returns a token in the JSON body, a non-HttpOnly cookie fallback is used.

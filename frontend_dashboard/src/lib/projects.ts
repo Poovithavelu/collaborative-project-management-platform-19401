@@ -32,7 +32,10 @@ export type Project = {
  */
 export async function listProjects(): Promise<Project[]> {
   const res = await apiRequest<Project[]>("/projects", { method: "GET" });
-  if (!res.ok || !res.data) return [];
+  if (!res.ok || !res.data) {
+    // Allow build-time skip without failing build
+    return [];
+  }
   return res.data;
 }
 
@@ -44,6 +47,12 @@ export async function listProjects(): Promise<Project[]> {
  */
 export async function createProjectAction(_: unknown, formData: FormData) {
   "use server";
+
+  // Avoid external calls during build
+  if ((process.env.NEXT_PHASE || "").includes("build")) {
+    return { error: "Action disabled during build." };
+  }
+
   const name = String(formData.get("name") || "").trim();
   const descriptionRaw = formData.get("description");
   const description =

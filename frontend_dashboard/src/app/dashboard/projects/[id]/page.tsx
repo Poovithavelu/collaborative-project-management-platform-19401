@@ -5,6 +5,7 @@ import { apiRequest } from "@/lib/api";
 import { requireAuth } from "@/lib/auth";
 import { listTasksByProject } from "@/lib/tasks";
 import ClientTasksSectionServer from "./tasks/ClientTasksSectionServer";
+import { isApiDisabled } from "@/lib/runtime";
 
 // Page depends on cookies/backend => force dynamic
 export const dynamic = "force-dynamic";
@@ -39,6 +40,24 @@ async function getProjectById(projectId: string): Promise<Project | null> {
  * - Lists tasks with basic metadata and provides Create/Edit modal interactions
  */
 export default async function ProjectDetailPage({ params }: { params: { id: string } }) {
+  // If API disabled (build/CI), show a minimal placeholder to avoid network calls
+  if (isApiDisabled()) {
+    return (
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard"
+            className="rounded-md border px-3 py-1.5 text-sm hover:bg-gray-100"
+          >
+            ← Back to Dashboard
+          </Link>
+          <h1 className="text-2xl font-semibold text-black">Project</h1>
+        </div>
+        <p className="text-gray-700">Build preview. Data loading is disabled.</p>
+      </section>
+    );
+  }
+
   // Ensure user is authenticated
   await requireAuth();
 
