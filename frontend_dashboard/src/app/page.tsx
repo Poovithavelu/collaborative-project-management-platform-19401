@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+// Force dynamic to avoid static optimization stalls in export-less mode.
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-white flex items-center justify-center px-4">

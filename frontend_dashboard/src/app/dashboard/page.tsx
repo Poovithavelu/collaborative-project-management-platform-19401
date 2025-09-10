@@ -1,12 +1,22 @@
 import React from "react";
 import { getCurrentUser } from "@/lib/auth";
+import { listProjects } from "@/lib/projects";
+import ProjectsListServer from "./ProjectsListServer";
+
+// Mark page as dynamic: it depends on cookies and runtime backend responses.
+export const dynamic = "force-dynamic";
 
 export default async function DashboardHome() {
   const user = await getCurrentUser();
+  const projects = await listProjects();
 
   return (
-    <section className="space-y-4">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
+    <section className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        {/* Placeholder for future filters or org switcher */}
+      </div>
+
       {user ? (
         <div className="rounded-lg border bg-white p-4">
           <p className="text-gray-700">
@@ -23,6 +33,8 @@ export default async function DashboardHome() {
           </p>
         </div>
       )}
+
+      <ProjectsListServer initialProjects={projects} />
     </section>
   );
 }

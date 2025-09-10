@@ -6,9 +6,12 @@ This app includes:
 - Login: `/login`
 - Register: `/register`
 - Protected Dashboard: `/dashboard` (server-side redirect to `/login` if unauthenticated)
-- Server actions for `loginAction`, `registerAction`, and `logoutAction`
+- Server actions for `loginAction`, `registerAction`, `logoutAction`
+- Projects list and creation via `listProjects` and `createProjectAction`
 
-The dashboard layout calls `/auth/me` on the backend to get the current user and org context.
+The dashboard layout calls `/auth/me` on the backend to get the current user and org context. The dashboard page lists projects scoped to the user's active organization using:
+- GET `/projects` to fetch all projects in active org
+- POST `/projects` to create a new project (Create Project modal)
 
 ### Environment
 
@@ -29,6 +32,8 @@ Expected endpoints (FastAPI):
 - POST `/auth/login` with JSON: `{ "email": string, "password": string }`
 - GET `/auth/me` (reads JWT from cookie or Authorization header)
 - POST `/auth/logout` (optional)
+- GET `/projects`
+- POST `/projects` with JSON: `{ "name": string, "description": string|null }`
 
 Ensure the backend is running at `NEXT_PUBLIC_BACKEND_API_URL`.
 

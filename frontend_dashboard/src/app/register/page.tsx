@@ -5,6 +5,8 @@ import React from "react";
 import { TextInput, PrimaryButton, ErrorBanner } from "@/components/ui";
 import { registerAction } from "@/lib/auth";
 
+// This route is a client component using server actions; it will not be statically prerendered.
+
 export default function RegisterPage() {
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [pending, setPending] = React.useState(false);

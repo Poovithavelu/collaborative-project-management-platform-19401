@@ -1,6 +1,9 @@
 import React from "react";
 import { requireAuth, logoutAction } from "@/lib/auth";
 
+// Layout depends on auth cookies and must be dynamic
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({
   children,
 }: {
