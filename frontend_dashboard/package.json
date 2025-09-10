@@ -15,22 +15,22 @@
     "e2e:ci": "cross-env DISABLE_API_DURING_BUILD=true BASE_URL=http://localhost:3000 PW_SKIP_WEBSERVER=0 npx playwright install --with-deps && npm run e2e:dev"
   },
   "dependencies": {
+    "next": "15.2.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.2.3"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.48.2",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
-    "@eslint/eslintrc": "^3",
-    "@playwright/test": "^1.48.2",
-    "cross-env": "^7.0.3",
+    "tailwindcss": "^4",
+    "typescript": "^5",
     "wait-on": "^7.2.0"
   }
 }
