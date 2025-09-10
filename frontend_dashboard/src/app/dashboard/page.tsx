@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export default async function DashboardHome() {
   // If API disabled (build/CI), render a minimal placeholder without calling backend
-  if (isApiDisabled()) {
+  if (await isApiDisabled()) {
     return (
       <section className="space-y-6">
         <div className="flex items-center justify-between">

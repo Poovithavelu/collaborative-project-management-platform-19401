@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "e2e": "playwright test",
+    "e2e:headed": "playwright test --headed",
+    "e2e:ui": "playwright test --ui",
+    "e2e:dev": "cross-env PW_SKIP_WEBSERVER=0 BASE_URL=http://localhost:3000 next dev & wait-on http://localhost:3000 && playwright test",
+    "e2e:report": "playwright show-report",
+    "e2e:ci": "cross-env DISABLE_API_DURING_BUILD=true BASE_URL=http://localhost:3000 PW_SKIP_WEBSERVER=0 npx playwright install --with-deps && npm run e2e:dev"
   },
   "dependencies": {
     "react": "^19.0.0",
@@ -22,6 +28,9 @@
     "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
-    "@eslint/eslintrc": "^3"
+    "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.48.2",
+    "cross-env": "^7.0.3",
+    "wait-on": "^7.2.0"
   }
 }

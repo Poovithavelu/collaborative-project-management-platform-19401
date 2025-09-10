@@ -59,8 +59,59 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## E2E Testing with Playwright
+
+This project includes end-to-end tests for the critical UX flows using Playwright:
+- Authentication: registration, login, route guard, logout
+- Project CRUD: creation, listing, navigation
+- Task CRUD: creation and editing within a project
+- Comments: posting a comment on a task
+
+Prerequisites:
+- Backend API running and reachable at `NEXT_PUBLIC_BACKEND_API_URL` (see Environment section).
+- Frontend running at BASE_URL (defaults to http://localhost:3000).
+
+Install Playwright browsers (only needed once):
+```bash
+npm install
+npx playwright install --with-deps
+```
+
+Run tests with a dev server auto-start:
+```bash
+# Starts next dev, waits for http://localhost:3000, then runs tests
+npm run e2e:dev
+```
+
+Or run tests against an already running server:
+```bash
+# Ensure the frontend is running (npm run dev), then:
+npm run e2e
+```
+
+Useful commands:
+- Headed mode (see the browser):
+  ```bash
+  npm run e2e:headed
+  ```
+- UI mode (explore tests):
+  ```bash
+  npm run e2e:ui
+  ```
+- Open test report:
+  ```bash
+  npm run e2e:report
+  ```
+
+Environment variables for E2E:
+- BASE_URL: The URL where the frontend is served (default http://localhost:3000).
+- NEXT_PUBLIC_BACKEND_API_URL: Must point to the backend the app uses during testing.
+
+Note: The app has build-time API call skipping; ensure you run in dev/start mode (not build-only) when executing E2E tests.
+
 ## Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [App Router](https://nextjs.org/docs/app)
 - [Server Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations)
+- [Playwright](https://playwright.dev/docs/intro)

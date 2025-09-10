@@ -41,7 +41,7 @@ async function getProjectById(projectId: string): Promise<Project | null> {
  */
 export default async function ProjectDetailPage({ params }: { params: { id: string } }) {
   // If API disabled (build/CI), show a minimal placeholder to avoid network calls
-  if (isApiDisabled()) {
+  if (await isApiDisabled()) {
     return (
       <section className="space-y-6">
         <div className="flex items-center gap-3">

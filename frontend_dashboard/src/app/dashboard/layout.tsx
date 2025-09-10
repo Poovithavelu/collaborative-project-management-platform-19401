@@ -11,7 +11,7 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   // If API is disabled (build/CI), avoid calling backend and render a safe shell
-  if (isApiDisabled()) {
+  if (await isApiDisabled()) {
     return (
       <div className="min-h-screen bg-gray-50 text-black">
         <header className="border-b bg-white">

@@ -4,8 +4,10 @@
  * PUBLIC_INTERFACE
  * isApiDisabled: Returns true when external API calls should be disabled (e.g., during next build/CI).
  * This checks DISABLE_API_DURING_BUILD or NEXT_PHASE build indicator.
+ *
+ * Note: Because this file is a server module ("use server"), exported functions must be async.
  */
-export function isApiDisabled(): boolean {
+export async function isApiDisabled(): Promise<boolean> {
   const phase = process.env.NEXT_PHASE || "";
   const byPhase = phase.includes("build");
   const byEnv = (process.env.DISABLE_API_DURING_BUILD || "").toLowerCase() === "true";

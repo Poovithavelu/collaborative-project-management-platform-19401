@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   experimental: {
     // Ensure app router dynamic usage is not blocked by export mode
   },
+  // Note: Avoid unsupported config keys; build-time API calls are already skipped in code
+  // using DISABLE_API_DURING_BUILD and NEXT_PHASE checks.
 };
 
 export default nextConfig;
