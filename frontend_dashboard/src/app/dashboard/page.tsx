@@ -17,6 +17,7 @@ export default async function DashboardHome() {
         </div>
         <div className="rounded-lg border bg-white p-4">
           <p className="text-gray-700">Build preview. Data loading is disabled.</p>
+          <p className="mt-1 text-sm text-gray-500">Some actions may be disabled during build.</p>
         </div>
       </section>
     );

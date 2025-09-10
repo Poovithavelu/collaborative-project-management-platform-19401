@@ -6,10 +6,12 @@ import { TextInput, PrimaryButton, ErrorBanner } from "@/components/ui";
 
 // Use a typed server action via formAction binding
 import { loginAction } from "@/lib/auth";
+import { useToast } from "@/components/ToastProvider";
 
 export default function LoginPage() {
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [pending, setPending] = React.useState(false);
+  const { addToast } = useToast();
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -25,11 +27,28 @@ export default function LoginPage() {
       if (result && "error" in result && result.error) {
         setError(result.error);
         setPending(false);
+        addToast({
+          type: "error",
+          title: "Login failed",
+          message: result.error,
+        });
+      } else {
+        addToast({
+          type: "success",
+          title: "Welcome back",
+          message: "Logging you in…",
+          duration: 2500,
+        });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unexpected error.";
       setError(message);
       setPending(false);
+      addToast({
+        type: "error",
+        title: "Login failed",
+        message,
+      });
     }
   }
 

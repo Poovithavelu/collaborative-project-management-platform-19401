@@ -15,3 +15,4 @@ declare module "@/app/dashboard/projects/[id]/tasks/CommentsServer";
 declare module "@/lib/comments";
 declare module "@/components/ErrorBoundary";
 declare module "@/components/ErrorFallback";
+declare module "@/components/ToastProvider";

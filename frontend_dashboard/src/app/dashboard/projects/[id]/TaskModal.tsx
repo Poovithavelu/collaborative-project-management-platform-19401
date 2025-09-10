@@ -2,6 +2,7 @@
 
 import React from "react";
 import { PrimaryButton, TextInput, ErrorBanner } from "@/components/ui";
+import { useToast } from "@/components/ToastProvider";
 
 export type TaskModalProps = {
   mode: "create" | "edit";
@@ -31,6 +32,7 @@ export default function TaskModal({
 }: TaskModalProps) {
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [pending, setPending] = React.useState(false);
+  const { addToast } = useToast();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -45,19 +47,34 @@ export default function TaskModal({
     }
 
     try {
-      const result = await onSubmitAction(null as unknown as void, fd);
-      if (result && "error" in result && result.error) {
-        setError(result.error);
+      const res = await onSubmitAction(null as unknown as void, fd);
+      if (res && "error" in res && res.error) {
+        setError(res.error);
         setPending(false);
+        addToast({
+          type: "error",
+          title: mode === "edit" ? "Update failed" : "Create failed",
+          message: res.error,
+        });
         return;
       }
       setPending(false);
       onClose();
       (e.currentTarget as HTMLFormElement).reset();
+      addToast({
+        type: "success",
+        title: mode === "edit" ? "Task updated" : "Task created",
+        message: mode === "edit" ? "Your changes were saved." : "New task added.",
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unexpected error.";
       setError(msg);
       setPending(false);
+      addToast({
+        type: "error",
+        title: mode === "edit" ? "Update failed" : "Create failed",
+        message: msg,
+      });
     }
   }
 
@@ -130,6 +147,7 @@ export default function TaskModal({
               type="button"
               className="rounded-md border px-3 py-2 text-sm hover:bg-gray-100"
               onClick={onClose}
+              disabled={pending}
             >
               Cancel
             </button>

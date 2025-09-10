@@ -36,6 +36,21 @@ DISABLE_API_DURING_BUILD=true
 
 The backend should set an HttpOnly JWT cookie on successful login/registration. For development, if the backend only returns a token in the JSON body, a non-HttpOnly cookie fallback is used.
 
+### UX Enhancements
+
+A lightweight Toast system is provided via `ToastProvider` and `useToast()`:
+- Mounted in `src/app/layout.tsx`, available app-wide.
+- Usage in client components:
+  ```
+  import { useToast } from "@/components/ToastProvider";
+  const { addToast } = useToast();
+  addToast({ type: "success", title: "Saved", message: "Your changes were saved." });
+  ```
+- Types: `success`, `error`, `info`.
+- Optional `duration` (ms), default 3500 (6000 for errors).
+
+A shared Spinner is also exported from `src/components/ui.tsx` and integrated into `PrimaryButton` when `loading` is true.
+
 ### Backend API
 
 Expected endpoints (FastAPI):

@@ -17,6 +17,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
  * - createCommentAction: server action signature (prev, formData) => Promise<{ error?: string } | void>
  */
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ToastProvider";
 
 export default function CommentsListAndForm({
   taskId,
@@ -36,6 +37,7 @@ export default function CommentsListAndForm({
   const [pending, setPending] = React.useState(false);
   const [error, setError] = React.useState<string | undefined>(undefined);
   const router = useRouter();
+  const { addToast } = useToast();
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -52,16 +54,31 @@ export default function CommentsListAndForm({
       if (res && "error" in res && res.error) {
         setError(res.error);
         setPending(false);
+        addToast({
+          type: "error",
+          title: "Comment failed",
+          message: res.error,
+        });
         return;
       }
       setPending(false);
       (e.currentTarget as HTMLFormElement).reset();
+      addToast({
+        type: "success",
+        title: "Comment posted",
+        message: "Your comment was added.",
+      });
       // Trigger a soft refresh to re-fetch server data for this page (comments/tasks)
       router.refresh();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unexpected error.";
       setError(msg);
       setPending(false);
+      addToast({
+        type: "error",
+        title: "Comment failed",
+        message: msg,
+      });
     }
   }
 
@@ -102,6 +119,7 @@ export default function CommentsListAndForm({
               placeholder="Write a comment..."
               className="w-full rounded-md border px-3 py-2 outline-none bg-white text-black placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-gray-300"
               rows={3}
+              disabled={pending}
             />
           </label>
           {/* Hidden context fields for server action */}

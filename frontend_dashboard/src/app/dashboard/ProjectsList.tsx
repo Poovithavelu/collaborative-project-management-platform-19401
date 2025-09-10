@@ -2,9 +2,10 @@
 
 import React from "react";
 import Link from "next/link";
-import { PrimaryButton, TextInput, ErrorBanner } from "@/components/ui";
+import { PrimaryButton, TextInput, ErrorBanner, Spinner } from "@/components/ui";
 import type { Project } from "@/lib/projects";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { useToast } from "@/components/ToastProvider";
 
 /**
  * Client-side component to render the project list and handle "Create Project" modal.
@@ -23,27 +24,54 @@ export default function ProjectsList({
   const [open, setOpen] = React.useState(false);
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [pending, setPending] = React.useState(false);
+  const { addToast } = useToast();
 
   async function onCreateSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(undefined);
     setPending(true);
+
+    // Optimistic UX: show a loading toast
+    addToast({
+      type: "info",
+      title: "Creating project",
+      message: "Please wait while we create your project…",
+      duration: 3000,
+    });
+
     try {
-      const result = await createProjectAction(null as unknown as void, new FormData(e.currentTarget));
+      const fd = new FormData(e.currentTarget);
+      const name = String(fd.get("name") || "").trim();
+      const result = await createProjectAction(null as unknown as void, fd);
       if (result && "error" in result && result.error) {
         setError(result.error);
         setPending(false);
+        addToast({
+          type: "error",
+          title: "Create failed",
+          message: result.error || "Unable to create project.",
+        });
         return;
       }
-      // Close on success; list will refresh because server component revalidated the path
+      // Success
       setOpen(false);
       setPending(false);
-      // Optionally reset the form
       (e.currentTarget as HTMLFormElement).reset();
+
+      addToast({
+        type: "success",
+        title: "Project created",
+        message: name ? `“${name}” was created.` : "Project created.",
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unexpected error.";
       setError(msg);
       setPending(false);
+      addToast({
+        type: "error",
+        title: "Create failed",
+        message: msg,
+      });
     }
   }
 
@@ -126,11 +154,19 @@ export default function ProjectsList({
                   type="button"
                   className="rounded-md border px-3 py-2 text-sm hover:bg-gray-100"
                   onClick={() => setOpen(false)}
+                  disabled={pending}
                 >
                   Cancel
                 </button>
                 <PrimaryButton type="submit" loading={pending}>
-                  Create
+                  {pending ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Spinner />
+                      <span>Creating…</span>
+                    </span>
+                  ) : (
+                    "Create"
+                  )}
                 </PrimaryButton>
               </div>
             </form>

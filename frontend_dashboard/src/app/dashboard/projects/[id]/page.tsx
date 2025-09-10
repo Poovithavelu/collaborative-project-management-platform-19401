@@ -54,6 +54,7 @@ export default async function ProjectDetailPage({ params }: { params: { id: stri
           <h1 className="text-2xl font-semibold text-black">Project</h1>
         </div>
         <p className="text-gray-700">Build preview. Data loading is disabled.</p>
+        <p className="text-sm text-gray-500">Tasks and comments are unavailable during build.</p>
       </section>
     );
   }

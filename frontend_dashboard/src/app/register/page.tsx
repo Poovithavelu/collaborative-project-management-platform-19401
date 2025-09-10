@@ -4,12 +4,14 @@ import Link from "next/link";
 import React from "react";
 import { TextInput, PrimaryButton, ErrorBanner } from "@/components/ui";
 import { registerAction } from "@/lib/auth";
+import { useToast } from "@/components/ToastProvider";
 
 // This route is a client component using server actions; it will not be statically prerendered.
 
 export default function RegisterPage() {
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [pending, setPending] = React.useState(false);
+  const { addToast } = useToast();
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -24,11 +26,28 @@ export default function RegisterPage() {
       if (result && "error" in result && result.error) {
         setError(result.error);
         setPending(false);
+        addToast({
+          type: "error",
+          title: "Registration failed",
+          message: result.error,
+        });
+      } else {
+        addToast({
+          type: "success",
+          title: "Account created",
+          message: "Redirecting to your dashboard…",
+          duration: 2500,
+        });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unexpected error.";
       setError(message);
       setPending(false);
+      addToast({
+        type: "error",
+        title: "Registration failed",
+        message,
+      });
     }
   }
 
