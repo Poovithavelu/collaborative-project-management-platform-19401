@@ -1,6 +1,9 @@
 import React from "react";
 import { getCurrentUser } from "@/lib/auth";
 
+// Tell Next.js this page depends on dynamic data (cookies) and must be rendered dynamically
+export const dynamic = "force-dynamic";
+
 export default async function DashboardHome() {
   const user = await getCurrentUser();
 

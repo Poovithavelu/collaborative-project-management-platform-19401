@@ -7,6 +7,9 @@ import { TextInput, PrimaryButton, ErrorBanner } from "@/components/ui";
 // Use a typed server action via formAction binding
 import { loginAction } from "@/lib/auth";
 
+// Although this is a client component, mark the route dynamic to avoid static export attempts
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [pending, setPending] = React.useState(false);

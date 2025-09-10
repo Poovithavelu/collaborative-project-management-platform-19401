@@ -5,6 +5,9 @@ import React from "react";
 import { TextInput, PrimaryButton, ErrorBanner } from "@/components/ui";
 import { registerAction } from "@/lib/auth";
 
+// Mark dynamic due to server action usage
+export const dynamic = "force-dynamic";
+
 export default function RegisterPage() {
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [pending, setPending] = React.useState(false);

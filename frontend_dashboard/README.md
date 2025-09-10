@@ -6,9 +6,10 @@ This app includes:
 - Login: `/login`
 - Register: `/register`
 - Protected Dashboard: `/dashboard` (server-side redirect to `/login` if unauthenticated)
-- Server actions for `loginAction`, `registerAction`, and `logoutAction`
+- Server actions for `loginAction`, `registerAction`, `logoutAction`, and `switchOrgAction`
+- Dashboard header shows current user and active organization and provides an "Switch org" menu (when memberships are provided by the backend).
 
-The dashboard layout calls `/auth/me` on the backend to get the current user and org context.
+The dashboard layout calls `/auth/me` on the backend to get the current user profile, memberships, and active org context.
 
 ### Environment
 
@@ -20,7 +21,13 @@ AUTH_COOKIE_SAMESITE=lax
 AUTH_COOKIE_NAME=collabtask_session
 ```
 
-The backend should set an HttpOnly JWT cookie on successful login/registration. For development, if the backend only returns a token in the JSON body, a non-HttpOnly cookie fallback is used.
+The backend should set an HttpOnly JWT cookie on successful login/registration and when switching orgs. For development, if the backend also returns a token in the JSON body, a non-HttpOnly cookie fallback is used so calls to `/auth/me` succeed.
+
+### Endpoints expected (FastAPI backend)
+- POST `/auth/register` — create user and org; returns TokenResponse and sets cookie
+- POST `/auth/login` — authenticate; returns TokenResponse and sets cookie
+- GET `/auth/me` — current user profile; reads JWT from cookie
+- POST `/auth/orgs/switch` — switch active org; returns TokenResponse and sets cookie
 
 ## Getting Started
 
