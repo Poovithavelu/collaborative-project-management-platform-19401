@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import ErrorFallback from "@/components/ErrorFallback";
 
 // Root layout is dynamic to avoid static optimization for auth-guarded routes.
 export const dynamic = "force-dynamic";
@@ -17,7 +19,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        {children}
+        <ErrorBoundary
+          fallback={
+            <main className="min-h-screen flex items-center justify-center px-4">
+              <div className="w-full max-w-lg">
+                <ErrorFallback />
+              </div>
+            </main>
+          }
+        >
+          {children}
+        </ErrorBoundary>
       </body>
     </html>
   );

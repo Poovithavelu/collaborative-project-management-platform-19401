@@ -13,3 +13,5 @@ declare module "@/app/dashboard/projects/[id]/tasks/ClientTasksSectionServer";
 declare module "@/app/dashboard/projects/[id]/tasks/Comments";
 declare module "@/app/dashboard/projects/[id]/tasks/CommentsServer";
 declare module "@/lib/comments";
+declare module "@/components/ErrorBoundary";
+declare module "@/components/ErrorFallback";

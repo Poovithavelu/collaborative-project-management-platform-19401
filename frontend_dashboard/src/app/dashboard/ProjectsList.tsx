@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { PrimaryButton, TextInput, ErrorBanner } from "@/components/ui";
 import type { Project } from "@/lib/projects";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 /**
  * Client-side component to render the project list and handle "Create Project" modal.
@@ -47,7 +48,8 @@ export default function ProjectsList({
   }
 
   return (
-    <div className="space-y-4">
+    <ErrorBoundary>
+      <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">Projects</h2>
         <PrimaryButton onClick={() => setOpen(true)}>Create Project</PrimaryButton>
@@ -135,6 +137,7 @@ export default function ProjectsList({
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 }

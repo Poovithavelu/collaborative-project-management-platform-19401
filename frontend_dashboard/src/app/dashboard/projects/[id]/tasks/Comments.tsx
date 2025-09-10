@@ -3,6 +3,7 @@
 import React from "react";
 import { PrimaryButton, ErrorBanner } from "@/components/ui";
 import type { Comment } from "@/lib/comments";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 /**
  * PUBLIC_INTERFACE
@@ -65,56 +66,54 @@ export default function CommentsListAndForm({
   }
 
   return (
-    <div className="mt-3 border-t pt-3">
-      <h4 className="text-sm font-medium text-gray-700">Comments</h4>
+    <ErrorBoundary>
+      <div className="mt-3 border-t pt-3">
+        <h4 className="text-sm font-medium text-gray-700">Comments</h4>
 
-      {comments.length === 0 ? (
-        <div className="mt-2 text-sm text-gray-500">No comments yet.</div>
-      ) : (
-        <ul className="mt-2 space-y-2">
-          {comments.map((c) => (
-            <li key={c.id} className="rounded-md bg-gray-50 p-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-800 break-words">
-                  {c.content}
-                </span>
-                <span className="ml-3 shrink-0 text-[11px] text-gray-500">
-                  {new Date(c.created_at).toLocaleString()}
-                </span>
-              </div>
-              {c.author_id && (
-                <div className="mt-1 text-[11px] text-gray-500">
-                  by {c.author_id}
+        {comments.length === 0 ? (
+          <div className="mt-2 text-sm text-gray-500">No comments yet.</div>
+        ) : (
+          <ul className="mt-2 space-y-2">
+            {comments.map((c) => (
+              <li key={c.id} className="rounded-md bg-gray-50 p-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-800 break-words">
+                    {c.content}
+                  </span>
+                  <span className="ml-3 shrink-0 text-[11px] text-gray-500">
+                    {new Date(c.created_at).toLocaleString()}
+                  </span>
                 </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+                {c.author_id && (
+                  <div className="mt-1 text-[11px] text-gray-500">by {c.author_id}</div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
 
-      <form onSubmit={onSubmit} className="mt-3 space-y-2">
-        <ErrorBanner message={error} />
-        <label className="block w-full">
-          <span className="block text-sm text-gray-700 mb-1">
-            Add a comment
-          </span>
-          <textarea
-            name="content"
-            required
-            placeholder="Write a comment..."
-            className="w-full rounded-md border px-3 py-2 outline-none bg-white text-black placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-gray-300"
-            rows={3}
-          />
-        </label>
-        {/* Hidden context fields for server action */}
-        <input type="hidden" name="task_id" value={taskId} />
-        <input type="hidden" name="project_id" value={projectId} />
-        <div className="flex items-center justify-end">
-          <PrimaryButton type="submit" loading={pending}>
-            Comment
-          </PrimaryButton>
-        </div>
-      </form>
-    </div>
+        <form onSubmit={onSubmit} className="mt-3 space-y-2">
+          <ErrorBanner message={error} />
+          <label className="block w-full">
+            <span className="block text-sm text-gray-700 mb-1">Add a comment</span>
+            <textarea
+              name="content"
+              required
+              placeholder="Write a comment..."
+              className="w-full rounded-md border px-3 py-2 outline-none bg-white text-black placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-gray-300"
+              rows={3}
+            />
+          </label>
+          {/* Hidden context fields for server action */}
+          <input type="hidden" name="task_id" value={taskId} />
+          <input type="hidden" name="project_id" value={projectId} />
+          <div className="flex items-center justify-end">
+            <PrimaryButton type="submit" loading={pending}>
+              Comment
+            </PrimaryButton>
+          </div>
+        </form>
+      </div>
+    </ErrorBoundary>
   );
 }
