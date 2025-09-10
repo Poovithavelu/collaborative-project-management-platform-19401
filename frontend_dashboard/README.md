@@ -22,11 +22,22 @@ AUTH_COOKIE_NAME=collabtask_session
 
 The backend should set an HttpOnly JWT cookie on successful login/registration. For development, if the backend only returns a token in the JSON body, a non-HttpOnly cookie fallback is used.
 
+### Backend API
+
+Expected endpoints (FastAPI):
+- POST `/auth/register` with JSON: `{ "email": string, "password": string, "full_name": string|null, "org_name": string }`
+- POST `/auth/login` with JSON: `{ "email": string, "password": string }`
+- GET `/auth/me` (reads JWT from cookie or Authorization header)
+- POST `/auth/logout` (optional)
+
+Ensure the backend is running at `NEXT_PUBLIC_BACKEND_API_URL`.
+
 ## Getting Started
 
 Run the development server:
 
 ```bash
+npm install
 npm run dev
 ```
 
