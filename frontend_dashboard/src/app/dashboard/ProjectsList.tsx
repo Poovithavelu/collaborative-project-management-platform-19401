@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { PrimaryButton, TextInput, ErrorBanner } from "@/components/ui";
 import type { Project } from "@/lib/projects";
 
@@ -59,20 +60,22 @@ export default function ProjectsList({
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {initialProjects.map((p) => (
-            <li key={p.id} className="rounded-lg border bg-white p-4 hover:shadow-sm transition">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-medium text-black">{p.name}</h3>
-                  {p.description ? (
-                    <p className="mt-1 text-sm text-gray-600 line-clamp-3">{p.description}</p>
-                  ) : (
-                    <p className="mt-1 text-sm text-gray-400 italic">No description</p>
-                  )}
+            <li key={p.id} className="rounded-lg border bg-white hover:shadow-sm transition">
+              <Link href={`/dashboard/projects/${encodeURIComponent(p.id)}`} className="block p-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-medium text-black">{p.name}</h3>
+                    {p.description ? (
+                      <p className="mt-1 text-sm text-gray-600 line-clamp-3">{p.description}</p>
+                    ) : (
+                      <p className="mt-1 text-sm text-gray-400 italic">No description</p>
+                    )}
+                  </div>
+                  <span className="ml-3 shrink-0 rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+                    {new Date(p.created_at).toLocaleDateString()}
+                  </span>
                 </div>
-                <span className="ml-3 shrink-0 rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
-                  {new Date(p.created_at).toLocaleDateString()}
-                </span>
-              </div>
+              </Link>
             </li>
           ))}
         </ul>
